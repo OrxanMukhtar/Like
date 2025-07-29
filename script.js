@@ -114,12 +114,14 @@ function createPostElement(postId, postData) {
     Object.entries(postData.comments).forEach(([cid, comment]) => {
       const commentEl = document.createElement("div");
       commentEl.className = "comment";
+      commentEl.style.backgroundColor = comment.color || "#007BFF";
+
 
       // Yorum avatar + yazar + metin
       const cAvatar = document.createElement("div");
       cAvatar.className = "avatar small-avatar";
       cAvatar.textContent = comment.avatar || comment.author.charAt(0).toUpperCase();
-      cAvatar.style.backgroundColor = comment.color || "#666";
+      cAvatar.style.backgroundColor = comment.color || "#fff";
 
       const cAuthor = document.createElement("strong");
       cAuthor.textContent = comment.author;
@@ -142,8 +144,8 @@ function createPostElement(postId, postData) {
 
   // Yorum formunda kullanıcıdan tekrar bilgi istemiyoruz
   commentForm.innerHTML = `
-    <input type="text" placeholder="Yorumunuzu yazın..." required />
-    <button type="submit">Gönder</button>
+    <input type="text" placeholder="Fikir bildir..." required />
+    <button type="submit">Yolla</button>
   `;
 
   commentForm.addEventListener("submit", (e) => {

@@ -21,6 +21,9 @@ header {
 h1 {
   margin: 0;
   font-size: 1.8rem;
+  padding: 10px;
+  color: yellow;
+  background-color: #2563eb;
 }
 
 form {
@@ -98,10 +101,10 @@ form button:hover {
 .comment {
   margin-top: 0.5rem;
   padding: 0.6rem;
-  background: #f1f5f9;
-  border-left: 4px solid #3b82f6;
+  /* background: #f1f5f9; */
+  border-left: 4px solid #2563eb;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 footer {
@@ -114,7 +117,21 @@ footer {
 
 
 .avatar {
-    width: 10%;
-    padding: 20px;
+    /* width: 10%; */
+    /* padding: 20px; */
     border-radius: 10px;
 }
+
+/* @media screen and (max-width: 600px) {
+
+    .avatar{
+        width: 15%;
+    }
+}
+
+@media  screen and (max-width: 400px) {
+    .avatar {
+        width: 22%;
+    }
+    
+} */
