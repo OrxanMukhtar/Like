@@ -3,122 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Porsche Gallery</title>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      onValue,
-      runTransaction
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBDMIDu-66dy5Aono5kPU75LYw9C9ckvpQ",
-      authDomain: "likeme-607cd.firebaseapp.com",
-      databaseURL: "https://likeme-607cd-default-rtdb.firebaseio.com",
-      projectId: "likeme-607cd",
-      storageBucket: "likeme-607cd.appspot.com",
-      messagingSenderId: "947409928774",
-      appId: "1:947409928774:web:ba39a0c00891a512e60047"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const images = [
-      { id: "car1", src: "car1.jpg" },
-      { id: "car2", src: "car2.jpg" }
-    ];
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const gallery = document.getElementById("gallery");
-
-      images.forEach(({ id, src }) => {
-        const container = document.createElement("div");
-        container.style.marginBottom = "30px";
-        container.style.textAlign = "center";
-
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = id;
-        img.style.width = "80%";
-        img.style.maxWidth = "600px";
-        img.style.cursor = "pointer";
-
-        const stats = document.createElement("div");
-        stats.style.marginTop = "10px";
-
-        const viewsSpan = document.createElement("span");
-        viewsSpan.id = `${id}-views`;
-        viewsSpan.textContent = "👁️ 0";
-
-        const likesSpan = document.createElement("span");
-        likesSpan.id = `${id}-likes`;
-        likesSpan.textContent = "0";
-
-        const likeBtn = document.createElement("button");
-        likeBtn.textContent = "❤️ Like";
-        likeBtn.style.marginLeft = "10px";
-        likeBtn.onclick = () => {
-          const likesRef = ref(db, `stats/${id}/likes`);
-          runTransaction(likesRef, (current) => (current || 0) + 1);
-        };
-
-        // Görüntülenme sayısını artırmak için tıklanınca
-        img.onclick = () => {
-          const viewsRef = ref(db, `stats/${id}/views`);
-          runTransaction(viewsRef, (current) => (current || 0) + 1);
-        };
-
-        // Canlı veri dinleme
-        const viewsRef = ref(db, `stats/${id}/views`);
-        onValue(viewsRef, (snap) => {
-          viewsSpan.textContent = `👁️ ${snap.val() || 0}`;
-        });
-
-        const likesRef = ref(db, `stats/${id}/likes`);
-        onValue(likesRef, (snap) => {
-          likesSpan.textContent = snap.val() || 0;
-        });
-
-        stats.appendChild(viewsSpan);
-        stats.appendChild(likeBtn);
-        stats.appendChild(document.createTextNode(" ("));
-        stats.appendChild(likesSpan);
-        stats.appendChild(document.createTextNode(" likes)"));
-
-        container.appendChild(img);
-        container.appendChild(stats);
-        gallery.appendChild(container);
-      });
-    });
-  </script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fafafa;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 40px;
-      color: #333;
-    }
-    button {
-      background-color: #e50914;
-      color: white;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Post & Comment Board</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Porsche Gallery</h1>
-  <div id="gallery"></div>
+    <div id="registration-container" style="display: none;"></div>
+    <div id="main-app" style="display: none;">
+
+        <header>
+            <h1>Share Your Thoughts</h1>
+        </header>
+
+        <main>
+            <form id="postForm">
+            <input type="text" id="author" placeholder="Your name" required />
+            <textarea id="content" placeholder="What's on your mind?" required></textarea>
+            <button type="submit">Post</button>
+            </form>
+
+            <section id="posts"></section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Mukhtarli</p>
+        </footer>
+
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
