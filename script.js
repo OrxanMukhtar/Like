@@ -74,7 +74,7 @@ function createPostElement(postId, postData) {
   const avatarBox = document.createElement("div");
   avatarBox.className = "avatar";
   avatarBox.textContent = postData.avatar || postData.author.charAt(0).toUpperCase();
-  avatarBox.style.backgroundColor = postData.color || "#007BFF";
+//   avatarBox.style.backgroundColor = postData.color || "#007BFF";
 
   // Yazar ismi
   const authorName = document.createElement("strong");
@@ -121,7 +121,7 @@ function createPostElement(postId, postData) {
       const cAvatar = document.createElement("div");
       cAvatar.className = "avatar small-avatar";
       cAvatar.textContent = comment.avatar || comment.author.charAt(0).toUpperCase();
-      cAvatar.style.backgroundColor = comment.color || "#fff";
+    //   cAvatar.style.backgroundColor = comment.color || "#fff";
 
       const cAuthor = document.createElement("strong");
       cAuthor.textContent = comment.author;
