@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     localStorage.setItem("userData", JSON.stringify(userData));
-    localStorage.setItem("registered", true);
+    localStorage.setItem("registered", "true");
 
-    // window.location.href = "index.html";
+    window.location.href = "index.html";
   });
 });
