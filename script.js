@@ -6,9 +6,9 @@ import {
   set,
   onValue,
   remove,
-  update
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBDMIDu-66dy5Aono5kPU75LYw9C9ckvpQ",
   authDomain: "likeme-607cd.firebaseapp.com",
@@ -19,20 +19,30 @@ const firebaseConfig = {
   appId: "1:947409928774:web:ba39a0c00891a512e60047"
 };
 
+// Başlat
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// HTML elemanları
 const postForm = document.getElementById("postForm");
 const postsSection = document.getElementById("posts");
 
+// Post gönderme
 postForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const author = document.getElementById("author").value.trim();
+
+  const userNickname = localStorage.getItem("userNickname");
   const content = document.getElementById("content").value.trim();
-  if (author && content) {
+
+  if (!userNickname) {
+    alert("Kayıtlı kullanıcı bulunamadı!");
+    return;
+  }
+
+  if (content) {
     const postRef = push(ref(db, "posts"));
     set(postRef, {
-      author,
+      author: userNickname,
       content,
       timestamp: Date.now(),
       comments: {}
@@ -41,23 +51,38 @@ postForm.addEventListener("submit", (e) => {
   }
 });
 
+// Post oluşturma fonksiyonu
 function createPostElement(postId, postData) {
   const postEl = document.createElement("div");
   postEl.classList.add("post");
 
   const header = document.createElement("div");
   header.className = "post-header";
-  header.innerHTML = `
-    <strong>${postData.author}</strong>
-    <button data-id="${postId}" class="delete-btn">Delete</button>
-  `;
+  header.innerHTML = `<strong>${postData.author}</strong>`;
   postEl.appendChild(header);
+
+  // Sadece sahibi ise Delete butonu ekle
+  const loggedInUser = localStorage.getItem("userNickname");
+  if (postData.author === loggedInUser) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.dataset.id = postId;
+
+    deleteBtn.addEventListener("click", () => {
+      if (confirm("Silmek istediğine emin misin?")) {
+        remove(ref(db, `posts/${postId}`));
+      }
+    });
+
+    header.appendChild(deleteBtn);
+  }
 
   const content = document.createElement("p");
   content.textContent = postData.content;
   postEl.appendChild(content);
 
-  // Comments
+  // Yorumları göster
   const commentList = document.createElement("div");
   if (postData.comments) {
     Object.entries(postData.comments).forEach(([cid, comment]) => {
@@ -69,7 +94,7 @@ function createPostElement(postId, postData) {
   }
   postEl.appendChild(commentList);
 
-  // Comment form
+  // Yorum formu
   const commentForm = document.createElement("form");
   commentForm.className = "comment-form";
   commentForm.innerHTML = `
@@ -93,17 +118,10 @@ function createPostElement(postId, postData) {
   });
   postEl.appendChild(commentForm);
 
-  // Delete handler
-  header.querySelector(".delete-btn").addEventListener("click", () => {
-    if (confirm("Silmek istedigine emin misin?")) {
-      remove(ref(db, `posts/${postId}`));
-    }
-  });
-
   return postEl;
 }
 
-// Load posts
+// Postları dinle ve yükle
 onValue(ref(db, "posts"), (snapshot) => {
   postsSection.innerHTML = "";
   const posts = snapshot.val() || {};
@@ -116,54 +134,43 @@ onValue(ref(db, "posts"), (snapshot) => {
   });
 });
 
-
-// Kullanıcının daha önce kayıt olup olmadığını kontrol et
+// Kayıt kontrolü
 const isRegistered = localStorage.getItem("isRegistered");
 
 if (!isRegistered) {
-  // Kullanıcı kayıt olmadıysa registration.html dosyasını yükle
+  // Kayıtlı değilse registration.html'i yükle
   fetch("registration.html")
     .then((response) => response.text())
     .then((html) => {
       document.getElementById("registration-container").innerHTML = html;
       document.getElementById("registration-container").style.display = "block";
-      attachRegistrationListener(); // registration.js fonksiyonunu bağla
+      attachRegistrationListener();
     })
     .catch((err) => {
       console.error("Kayıt ekranı yüklenemedi:", err);
     });
 } else {
-  // Kullanıcı zaten kayıt olduysa ana içeriği göster
   document.getElementById("main-app").style.display = "block";
 }
 
-// Registration formunu yakala ve localStorage'a kaydet
+// Kayıt formunu bağla
 function attachRegistrationListener() {
-  // Bekle ki registration.js içindeki form gitsin DOM'a yerleşsin
   setTimeout(() => {
     const form = document.getElementById("registration-form");
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // Formdan verileri al
         const email = form.querySelector("#email").value;
         const nickname = form.querySelector("#nickname").value;
-        // const titleColor = form.querySelector("#titleColor").value;
-        // const profileLetter = form.querySelector("#profileLetter").value;
 
-        // Kullanıcı bilgilerini localStorage'a kaydet
         localStorage.setItem("isRegistered", "true");
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userNickname", nickname);
-        // localStorage.setItem("userColor", titleColor);
-        // localStorage.setItem("userLetter", profileLetter);
 
-        // Registration'ı gizle, app'i göster
         document.getElementById("registration-container").style.display = "none";
         document.getElementById("main-app").style.display = "block";
       });
     }
-  }, 300); // Küçük bir bekleme süresi
+  }, 300);
 }
-
