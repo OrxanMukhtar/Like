@@ -27,28 +27,38 @@ const db = getDatabase(app);
 const postForm = document.getElementById("postForm");
 const postsSection = document.getElementById("posts");
 
+// Kullanıcı bilgilerini al (localStorage'dan)
+const userDataStr = localStorage.getItem("userData");
+if (!userDataStr) {
+  // Eğer kayıt yoksa kayıt sayfasına yönlendir
+  window.location.href = "registration.html";
+}
+const userData = JSON.parse(userDataStr);
+
 // Post gönderme
 postForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const userNickname = localStorage.getItem("userNickname");
   const content = document.getElementById("content").value.trim();
 
-  if (!userNickname) {
-    alert("Kayıtlı kullanıcı bulunamadı!");
+  if (!content) {
+    alert("Lütfen bir içerik giriniz.");
     return;
   }
 
-  if (content) {
-    const postRef = push(ref(db, "posts"));
-    set(postRef, {
-      author: userNickname,
-      content,
-      timestamp: Date.now(),
-      comments: {}
-    });
-    postForm.reset();
-  }
+  // Firebase'e yeni post ekle
+  const postRef = push(ref(db, "posts"));
+  set(postRef, {
+    author: userData.nickname,
+    email: userData.email,
+    color: userData.color,
+    avatar: userData.avatar,
+    content,
+    timestamp: Date.now(),
+    comments: {}
+  });
+
+  postForm.reset();
 });
 
 // Post oluşturma fonksiyonu
@@ -56,14 +66,25 @@ function createPostElement(postId, postData) {
   const postEl = document.createElement("div");
   postEl.classList.add("post");
 
+  // Avatar + isim + sil butonu header
   const header = document.createElement("div");
   header.className = "post-header";
-  header.innerHTML = `<strong>${postData.author}</strong>`;
-  postEl.appendChild(header);
 
-  // Sadece sahibi ise Delete butonu ekle
-  const loggedInUser = localStorage.getItem("userNickname");
-  if (postData.author === loggedInUser) {
+  // Avatar kutusu
+  const avatarBox = document.createElement("div");
+  avatarBox.className = "avatar";
+  avatarBox.textContent = postData.avatar || postData.author.charAt(0).toUpperCase();
+  avatarBox.style.backgroundColor = postData.color || "#007BFF";
+
+  // Yazar ismi
+  const authorName = document.createElement("strong");
+  authorName.textContent = postData.author;
+
+  header.appendChild(avatarBox);
+  header.appendChild(authorName);
+
+  // Sil butonu sadece kendi postuysa
+  if (postData.email === userData.email) {
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.className = "delete-btn";
@@ -78,18 +99,39 @@ function createPostElement(postId, postData) {
     header.appendChild(deleteBtn);
   }
 
-  const content = document.createElement("p");
-  content.textContent = postData.content;
-  postEl.appendChild(content);
+  postEl.appendChild(header);
 
-  // Yorumları göster
+  // İçerik
+  const contentP = document.createElement("p");
+  contentP.textContent = postData.content;
+  postEl.appendChild(contentP);
+
+  // Yorumlar listesi
   const commentList = document.createElement("div");
+  commentList.className = "comment-list";
+
   if (postData.comments) {
     Object.entries(postData.comments).forEach(([cid, comment]) => {
-      const c = document.createElement("div");
-      c.className = "comment";
-      c.textContent = `${comment.author}: ${comment.text}`;
-      commentList.appendChild(c);
+      const commentEl = document.createElement("div");
+      commentEl.className = "comment";
+
+      // Yorum avatar + yazar + metin
+      const cAvatar = document.createElement("div");
+      cAvatar.className = "avatar small-avatar";
+      cAvatar.textContent = comment.avatar || comment.author.charAt(0).toUpperCase();
+      cAvatar.style.backgroundColor = comment.color || "#666";
+
+      const cAuthor = document.createElement("strong");
+      cAuthor.textContent = comment.author;
+
+      const cText = document.createElement("span");
+      cText.textContent = ": " + comment.text;
+
+      commentEl.appendChild(cAvatar);
+      commentEl.appendChild(cAuthor);
+      commentEl.appendChild(cText);
+
+      commentList.appendChild(commentEl);
     });
   }
   postEl.appendChild(commentList);
@@ -97,80 +139,49 @@ function createPostElement(postId, postData) {
   // Yorum formu
   const commentForm = document.createElement("form");
   commentForm.className = "comment-form";
+
+  // Yorum formunda kullanıcıdan tekrar bilgi istemiyoruz
   commentForm.innerHTML = `
-    <input type="text" placeholder="Name" required />
-    <input type="text" placeholder="Your comment" required />
-    <button type="submit">Comment</button>
+    <input type="text" placeholder="Yorumunuzu yazın..." required />
+    <button type="submit">Gönder</button>
   `;
+
   commentForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = commentForm.children[0].value.trim();
-    const text = commentForm.children[1].value.trim();
-    if (name && text) {
-      const commentRef = ref(db, `posts/${postId}/comments`);
-      const newComment = push(commentRef);
-      set(newComment, {
-        author: name,
-        text
-      });
-      commentForm.reset();
-    }
+    const commentText = commentForm.querySelector("input").value.trim();
+    if (!commentText) return;
+
+    const commentRef = ref(db, `posts/${postId}/comments`);
+    const newComment = push(commentRef);
+
+    set(newComment, {
+      author: userData.nickname,
+      email: userData.email,
+      color: userData.color,
+      avatar: userData.avatar,
+      text: commentText
+    });
+
+    commentForm.reset();
   });
+
   postEl.appendChild(commentForm);
 
   return postEl;
 }
 
-// Postları dinle ve yükle
+// Postları dinle ve güncelle
 onValue(ref(db, "posts"), (snapshot) => {
   postsSection.innerHTML = "";
   const posts = snapshot.val() || {};
   const sortedPosts = Object.entries(posts).sort(
     (a, b) => b[1].timestamp - a[1].timestamp
   );
+
   sortedPosts.forEach(([id, post]) => {
     const postEl = createPostElement(id, post);
     postsSection.appendChild(postEl);
   });
 });
 
-// Kayıt kontrolü
-const isRegistered = localStorage.getItem("isRegistered");
-
-if (!isRegistered) {
-  // Kayıtlı değilse registration.html'i yükle
-  fetch("registration.html")
-    .then((response) => response.text())
-    .then((html) => {
-      document.getElementById("registration-container").innerHTML = html;
-      document.getElementById("registration-container").style.display = "block";
-      attachRegistrationListener();
-    })
-    .catch((err) => {
-      console.error("Kayıt ekranı yüklenemedi:", err);
-    });
-} else {
-  document.getElementById("main-app").style.display = "block";
-}
-
-// Kayıt formunu bağla
-function attachRegistrationListener() {
-  setTimeout(() => {
-    const form = document.getElementById("registration-form");
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const email = form.querySelector("#email").value;
-        const nickname = form.querySelector("#nickname").value;
-
-        localStorage.setItem("isRegistered", "true");
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userNickname", nickname);
-
-        document.getElementById("registration-container").style.display = "none";
-        document.getElementById("main-app").style.display = "block";
-      });
-    }
-  }, 300);
-}
+// Kayıt kontrolleri ve görünüm yönetimi (registration-container ve main-app elementlerini js tarafında yönetiyorsan burayı kontrol et)

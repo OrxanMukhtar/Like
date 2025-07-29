@@ -3,33 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Post & Comment Board</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Mini Forum</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div id="registration-container" style="display: none;"></div>
-    <div id="main-app" style="display: none;">
+  <div class="container">
+    <h1>Forum</h1>
 
-        <header>
-            <h1>Share Your Thoughts</h1>
-        </header>
+    <form id="postForm">
+      <textarea id="content" placeholder="Bir şeyler yaz..." required></textarea>
+      <button type="submit">Gönder</button>
+    </form>
 
-        <main>
-            <form id="postForm">
-            <input type="text" id="author" placeholder="Your name" required />
-            <textarea id="content" placeholder="What's on your mind?" required></textarea>
-            <button type="submit">Post</button>
-            </form>
-
-            <section id="posts"></section>
-        </main>
-
-        <footer>
-            <p>&copy; 2025 Mukhtarli</p>
-        </footer>
-
+    <div id="posts"></div>
   </div>
 
-  <script type="module" src="script.js"></script>
+  <script type="Module" src="script.js"></script>
 </body>
 </html>
