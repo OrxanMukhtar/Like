@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Porsche 911 / Mukhtarli</title>
+  <title>Porsche Gallery</title>
 
-  <!-- Firebase'i ve JS işlemlerini içeride hallediyoruz -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
@@ -28,26 +27,71 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Referanslar
-    const viewsRef = ref(db, "stats/views");
-    const likesRef = ref(db, "stats/likes");
+    const images = [
+      { id: "car1", src: "car1.jpg" },
+      { id: "car2", src: "car2.jpg" }
+    ];
 
-    // Görüntülenme sayısını artır
-    runTransaction(viewsRef, (current) => (current || 0) + 1);
-
-    // Canlı veri gösterimi
-    onValue(viewsRef, (snap) => {
-      document.getElementById("views").textContent = `👁️ ${snap.val()}`;
-    });
-
-    onValue(likesRef, (snap) => {
-      document.getElementById("likes").textContent = snap.val();
-    });
-
-    // Like butonuna tıklanınca artır
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("likeBtn").addEventListener("click", () => {
-        runTransaction(likesRef, (current) => (current || 0) + 1);
+      const gallery = document.getElementById("gallery");
+
+      images.forEach(({ id, src }) => {
+        const container = document.createElement("div");
+        container.style.marginBottom = "30px";
+        container.style.textAlign = "center";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = id;
+        img.style.width = "80%";
+        img.style.maxWidth = "600px";
+        img.style.cursor = "pointer";
+
+        const stats = document.createElement("div");
+        stats.style.marginTop = "10px";
+
+        const viewsSpan = document.createElement("span");
+        viewsSpan.id = `${id}-views`;
+        viewsSpan.textContent = "👁️ 0";
+
+        const likesSpan = document.createElement("span");
+        likesSpan.id = `${id}-likes`;
+        likesSpan.textContent = "0";
+
+        const likeBtn = document.createElement("button");
+        likeBtn.textContent = "❤️ Like";
+        likeBtn.style.marginLeft = "10px";
+        likeBtn.onclick = () => {
+          const likesRef = ref(db, `stats/${id}/likes`);
+          runTransaction(likesRef, (current) => (current || 0) + 1);
+        };
+
+        // Görüntülenme sayısını artırmak için tıklanınca
+        img.onclick = () => {
+          const viewsRef = ref(db, `stats/${id}/views`);
+          runTransaction(viewsRef, (current) => (current || 0) + 1);
+        };
+
+        // Canlı veri dinleme
+        const viewsRef = ref(db, `stats/${id}/views`);
+        onValue(viewsRef, (snap) => {
+          viewsSpan.textContent = `👁️ ${snap.val() || 0}`;
+        });
+
+        const likesRef = ref(db, `stats/${id}/likes`);
+        onValue(likesRef, (snap) => {
+          likesSpan.textContent = snap.val() || 0;
+        });
+
+        stats.appendChild(viewsSpan);
+        stats.appendChild(likeBtn);
+        stats.appendChild(document.createTextNode(" ("));
+        stats.appendChild(likesSpan);
+        stats.appendChild(document.createTextNode(" likes)"));
+
+        container.appendChild(img);
+        container.appendChild(stats);
+        gallery.appendChild(container);
       });
     });
   </script>
@@ -55,85 +99,26 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
+      background: #fafafa;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
       color: #333;
     }
-    header {
-      background: #7fce17;
-      color: #fff;
-      padding: 20px 10px;
-      text-align: center;
-    }
-    .hero {
-      text-align: center;
-      padding: 50px 20px;
-      background: url('body_red.jpg') no-repeat center center/cover;
-      color: white;
-      height: 60vh;
-    }
-    .hero h1 {
-      font-size: 3rem;
-      margin: 0;
-    }
-    .hero p {
-      font-size: 1.2rem;
-      margin: 10px 0 0;
-    }
-    .cta {
-      margin: 20px 0;
-    }
-    .cta a {
-      text-decoration: none;
-      background: #e50914;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    .stats {
-      margin-top: 20px;
-      font-size: 1.2rem;
-    }
     button {
-      padding: 10px 15px;
-      font-size: 1rem;
-      margin-left: 10px;
+      background-color: #e50914;
+      color: white;
+      padding: 6px 12px;
       border: none;
       border-radius: 5px;
-      background: #e50914;
-      color: white;
       cursor: pointer;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #7fce17;
-      color: #fff;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Porsche 911</h1>
-    <p>Experience the thrill of driving perfection</p>
-  </header>
-
-  <section class="hero">
-    <h1>Unleash the Power</h1>
-    <p>The Porsche 911 is the epitome of performance and luxury.</p>
-    <div class="cta">
-      <a href="#learn-more">Learn More</a>
-    </div>
-    <div class="stats">
-      <span id="views">👁️ 0</span>
-      <button id="likeBtn">❤️ Like (<span id="likes">0</span>)</button>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Mukhtarli. All rights reserved.</p>
-  </footer>
+  <h1>Porsche Gallery</h1>
+  <div id="gallery"></div>
 </body>
 </html>
