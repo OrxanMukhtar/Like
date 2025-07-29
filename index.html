@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Porsche 911 / Mukhtarli</title>
+
+  <!-- Firebase'i ve JS işlemlerini içeride hallediyoruz -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      onValue,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDMIDu-66dy5Aono5kPU75LYw9C9ckvpQ",
+      authDomain: "likeme-607cd.firebaseapp.com",
+      databaseURL: "https://likeme-607cd-default-rtdb.firebaseio.com",
+      projectId: "likeme-607cd",
+      storageBucket: "likeme-607cd.appspot.com",
+      messagingSenderId: "947409928774",
+      appId: "1:947409928774:web:ba39a0c00891a512e60047"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Referanslar
+    const viewsRef = ref(db, "stats/views");
+    const likesRef = ref(db, "stats/likes");
+
+    // Görüntülenme sayısını artır
+    runTransaction(viewsRef, (current) => (current || 0) + 1);
+
+    // Canlı veri gösterimi
+    onValue(viewsRef, (snap) => {
+      document.getElementById("views").textContent = `👁️ ${snap.val()}`;
+    });
+
+    onValue(likesRef, (snap) => {
+      document.getElementById("likes").textContent = snap.val();
+    });
+
+    // Like butonuna tıklanınca artır
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("likeBtn").addEventListener("click", () => {
+        runTransaction(likesRef, (current) => (current || 0) + 1);
+      });
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #7fce17;
+      color: #fff;
+      padding: 20px 10px;
+      text-align: center;
+    }
+    .hero {
+      text-align: center;
+      padding: 50px 20px;
+      background: url('body_red.jpg') no-repeat center center/cover;
+      color: white;
+      height: 60vh;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin: 10px 0 0;
+    }
+    .cta {
+      margin: 20px 0;
+    }
+    .cta a {
+      text-decoration: none;
+      background: #e50914;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .stats {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      margin-left: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #e50914;
+      color: white;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #7fce17;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Porsche 911</h1>
+    <p>Experience the thrill of driving perfection</p>
+  </header>
+
+  <section class="hero">
+    <h1>Unleash the Power</h1>
+    <p>The Porsche 911 is the epitome of performance and luxury.</p>
+    <div class="cta">
+      <a href="#learn-more">Learn More</a>
+    </div>
+    <div class="stats">
+      <span id="views">👁️ 0</span>
+      <button id="likeBtn">❤️ Like (<span id="likes">0</span>)</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Mukhtarli. All rights reserved.</p>
+  </footer>
+</body>
+</html>
