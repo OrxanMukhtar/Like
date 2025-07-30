@@ -8,7 +8,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Əxlaq çərçivəsində</h1>
+    <div class="headerDiv">
+
+        <h1>Nə var - nə yox...</h1>
+        <button id="settings-btn">⚙️ Ayarlar</button>
+        
+    </div>
 
     <form id="postForm">
       <textarea id="content" placeholder="Yaz..." required></textarea>
@@ -17,6 +22,37 @@
 
     <div id="posts"></div>
   </div>
+  <div id="settings-modal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Settings</h3>
+    <div class="settings-container">
+        <label>Email</label>
+        <input type="email" id="settings-email">
+    </div>
+
+    <div class="settings-container">
+        <label>Nick Name</label>
+        <input type="text" id="settings-nickname">
+    </div>
+
+    <div class="settings-container">
+        <label>Avatar</label>
+        <input type="text" id="settings-avatar" inputmode="text" pattern=".*\S.*" required placeholder="🦁, A, 😊" >
+    </div>
+
+    <div class="settings-container">
+        <label>Colour</label>
+        <div class="color-picker">
+            <input type="color" id="settings-color">
+        </div>
+    </div>
+
+
+    <button id="save-settings">Save</button>
+    <button id="close-settings">Close</button>
+  </div>
+</div>
+
 
   <script type="Module" src="script.js"></script>
 </body>

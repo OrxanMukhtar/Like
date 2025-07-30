@@ -8,6 +8,17 @@ import {
   remove,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+// Tarih formatlama fonksiyonu
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleString("tr-TR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
+
+
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBDMIDu-66dy5Aono5kPU75LYw9C9ckvpQ",
@@ -74,6 +85,12 @@ function createPostElement(postId, postData) {
   const avatarBox = document.createElement("div");
   avatarBox.className = "avatar";
   avatarBox.textContent = postData.avatar || postData.author.charAt(0).toUpperCase();
+  // Tarih
+const time = document.createElement("span");
+time.className = "post-time";
+time.textContent = formatDate(postData.timestamp);
+header.appendChild(time);
+
 //   avatarBox.style.backgroundColor = postData.color || "#007BFF";
 
   // Yazar ismi
@@ -116,6 +133,10 @@ function createPostElement(postId, postData) {
       commentEl.className = "comment";
       commentEl.style.backgroundColor = comment.color || "#007BFF";
 
+        // Zaman etiketi
+const cTime = document.createElement("span");
+cTime.className = "comment-time";
+cTime.textContent = " (" + formatDate(comment.timestamp) + ")" + " " + ":";
 
       // Yorum avatar + yazar + metin
       const cAvatar = document.createElement("div");
@@ -127,10 +148,11 @@ function createPostElement(postId, postData) {
       cAuthor.textContent = comment.author;
 
       const cText = document.createElement("span");
-      cText.textContent = ": " + comment.text;
+      cText.textContent = comment.text;
 
       commentEl.appendChild(cAvatar);
       commentEl.appendChild(cAuthor);
+      commentEl.appendChild(cTime);
       commentEl.appendChild(cText);
 
       commentList.appendChild(commentEl);
@@ -161,7 +183,8 @@ function createPostElement(postId, postData) {
       email: userData.email,
       color: userData.color,
       avatar: userData.avatar,
-      text: commentText
+      text: commentText,
+      timestamp: Date.now()
     });
 
     commentForm.reset();
@@ -187,3 +210,43 @@ onValue(ref(db, "posts"), (snapshot) => {
 });
 
 // Kayıt kontrolleri ve görünüm yönetimi (registration-container ve main-app elementlerini js tarafında yönetiyorsan burayı kontrol et)
+
+
+const settingsBtn = document.getElementById("settings-btn");
+const modal = document.getElementById("settings-modal");
+const closeBtn = document.getElementById("close-settings");
+const saveBtn = document.getElementById("save-settings");
+
+const emailInput = document.getElementById("settings-email");
+const nicknameInput = document.getElementById("settings-nickname");
+const colorInput = document.getElementById("settings-color");
+const avatarInput = document.getElementById("settings-avatar");
+
+
+settingsBtn.addEventListener("click", () => {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  emailInput.value = userData.email;
+  nicknameInput.value = userData.nickname;
+  colorInput.value = userData.color;
+  avatarInput.value = userData.avatar;
+  modal.classList.remove("hidden");
+});
+
+
+closeBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+
+saveBtn.addEventListener("click", () => {
+  const updatedUser = {
+    email: emailInput.value,
+    nickname: nicknameInput.value,
+    color: colorInput.value,
+    avatar: avatarInput.value.toUpperCase(),
+  };
+
+  localStorage.setItem("userData", JSON.stringify(updatedUser));
+  modal.classList.add("hidden");
+  location.reload(); // değişiklikleri uygulamak için
+});
