@@ -3,8 +3,7 @@ import {
   getDatabase,
   ref,
   push,
-  set,
-  onValue
+  onChildAdded
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -20,67 +19,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Kullanıcı bilgilerini al
-const userDataStr = localStorage.getItem("userData");
-if (!userDataStr) {
-  window.location.href = "registration.html";
-}
-const currentUser = JSON.parse(userDataStr);
-
-// URL'den hedef kullanıcının email'ini al
 const urlParams = new URLSearchParams(window.location.search);
-const targetEmail = urlParams.get("to");
+const me = urlParams.get("me");
+const other = urlParams.get("other");
 
-if (!targetEmail) {
-  alert("Hedef kullanıcı belirtilmedi.");
+if (!me || !other) {
+  alert("Eksik sohbet bilgisi.");
   window.location.href = "chat.html";
 }
 
-// Eşsiz chat ID oluştur (email'leri alfabetik sırayla birleştir)
-const chatId = [currentUser.email, targetEmail].sort().join("_").replace(/\./g, "_");
+document.getElementById("chatInfo").textContent = `🗨️ ${me} ile ${other} arasında sohbet`;
 
-const chatTitle = document.getElementById("chatTitle");
-chatTitle.textContent = `💬 ${targetEmail} ile sohbet`;
+const chatId = [me, other].sort().join("_");
+const messagesRef = ref(db, `chats/${chatId}`);
 
 const chatBox = document.getElementById("chatBox");
-const chatForm = document.getElementById("chatForm");
-const messageInput = document.getElementById("messageInput");
+const input = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
-// Mesaj gönderme
-chatForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const text = messageInput.value.trim();
-  if (!text) return;
+sendBtn.addEventListener("click", async () => {
+  const msg = input.value.trim();
+  if (!msg) return;
 
-  const msgRef = push(ref(db, `chats/${chatId}/messages`));
-  set(msgRef, {
-    sender: currentUser.email,
-    avatar: currentUser.avatar,
-    color: currentUser.color,
-    text,
+  await push(messagesRef, {
+    sender: me,
+    message: msg,
     timestamp: Date.now()
   });
 
-  messageInput.value = "";
+  input.value = "";
 });
 
-// Mesajları dinle
-onValue(ref(db, `chats/${chatId}/messages`), (snapshot) => {
-  chatBox.innerHTML = "";
-  const messages = snapshot.val();
-  if (!messages) return;
-
-  Object.values(messages).forEach((msg) => {
-    const msgEl = document.createElement("div");
-    msgEl.className = "msg " + (msg.sender === currentUser.email ? "me" : "you");
-    msgEl.style.backgroundColor = msg.color || "#eee";
-    msgEl.innerHTML = `<strong>${msg.avatar || "?"}</strong>: ${msg.text}`;
-    chatBox.appendChild(msgEl);
-  });
-
+onChildAdded(messagesRef, (snapshot) => {
+  const msgData = snapshot.val();
+  const msgEl = document.createElement("div");
+  msgEl.className = `message ${msgData.sender === me ? "you" : "them"}`;
+  msgEl.textContent = msgData.message;
+  chatBox.appendChild(msgEl);
   chatBox.scrollTop = chatBox.scrollHeight;
-});
-
-document.getElementById("backBtn").addEventListener("click", () => {
-  window.location.href = "chat.html";
 });

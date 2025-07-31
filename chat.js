@@ -24,7 +24,6 @@ if (!userDataStr) {
 }
 const currentUser = JSON.parse(userDataStr);
 
-// Mevcut kullanıcıyı göster
 document.querySelector(".user-info").textContent = `🟢 Giriş yapan: ${currentUser.nickname} (${currentUser.email})`;
 
 const searchInput = document.getElementById("searchInput");
@@ -68,8 +67,15 @@ searchBtn.addEventListener("click", async () => {
 
     resultBox.innerHTML = `
       <p><strong>${foundUser.nickname}</strong> (${foundUser.email}) bulundu!</p>
-      <button onclick="alert('Gerçek sohbet sistemi yakında :)')">💬 Sohbet Başlat</button>
+      <button id="startChatBtn">💬 Sohbet Başlat</button>
     `;
+
+    document.getElementById("startChatBtn").addEventListener("click", () => {
+      const url = new URL("chat-room.html", window.location.href);
+      url.searchParams.set("me", currentUser.email);
+      url.searchParams.set("other", foundUser.email);
+      window.location.href = url.toString();
+    });
   } catch (err) {
     console.error("Arama hatası:", err);
     resultBox.textContent = "Arama sırasında bir hata oluştu.";
@@ -79,6 +85,3 @@ searchBtn.addEventListener("click", async () => {
 goForumBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
-
-
-window.location.href = `chat-room.html?to=${foundUser.email}`;

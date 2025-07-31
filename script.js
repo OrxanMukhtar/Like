@@ -8,8 +8,6 @@ import {
   remove,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// Tarih formatlama fonksiyonu
-
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   return date.toLocaleString("tr-TR", {
@@ -18,8 +16,6 @@ function formatDate(timestamp) {
   });
 }
 
-
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBDMIDu-66dy5Aono5kPU75LYw9C9ckvpQ",
   authDomain: "likeme-607cd.firebaseapp.com",
@@ -30,23 +26,18 @@ const firebaseConfig = {
   appId: "1:947409928774:web:ba39a0c00891a512e60047"
 };
 
-// Başlat
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// HTML elemanları
 const postForm = document.getElementById("postForm");
 const postsSection = document.getElementById("posts");
 
-// Kullanıcı bilgilerini al (localStorage'dan)
 const userDataStr = localStorage.getItem("userData");
 if (!userDataStr) {
-  // Eğer kayıt yoksa kayıt sayfasına yönlendir
   window.location.href = "registration.html";
 }
 const userData = JSON.parse(userDataStr);
 
-// Post gönderme
 postForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -57,7 +48,6 @@ postForm.addEventListener("submit", (e) => {
     return;
   }
 
-  // Firebase'e yeni post ekle
   const postRef = push(ref(db, "posts"));
   set(postRef, {
     author: userData.nickname,
@@ -72,35 +62,28 @@ postForm.addEventListener("submit", (e) => {
   postForm.reset();
 });
 
-// Post oluşturma fonksiyonu
 function createPostElement(postId, postData) {
   const postEl = document.createElement("div");
   postEl.classList.add("post");
 
-  // Avatar + isim + sil butonu header
   const header = document.createElement("div");
   header.className = "post-header";
 
-  // Avatar kutusu
   const avatarBox = document.createElement("div");
   avatarBox.className = "avatar";
   avatarBox.textContent = postData.avatar || postData.author.charAt(0).toUpperCase();
-  // Tarih
-const time = document.createElement("span");
-time.className = "post-time";
-time.textContent = formatDate(postData.timestamp);
-header.appendChild(time);
 
-//   avatarBox.style.backgroundColor = postData.color || "#007BFF";
+  const time = document.createElement("span");
+  time.className = "post-time";
+  time.textContent = formatDate(postData.timestamp);
+  header.appendChild(time);
 
-  // Yazar ismi
   const authorName = document.createElement("strong");
   authorName.textContent = postData.author;
 
   header.appendChild(avatarBox);
   header.appendChild(authorName);
 
-  // Sil butonu sadece kendi postuysa
   if (postData.email === userData.email) {
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
@@ -118,12 +101,10 @@ header.appendChild(time);
 
   postEl.appendChild(header);
 
-  // İçerik
   const contentP = document.createElement("p");
   contentP.textContent = postData.content;
   postEl.appendChild(contentP);
 
-  // Yorumlar listesi
   const commentList = document.createElement("div");
   commentList.className = "comment-list";
 
@@ -133,16 +114,13 @@ header.appendChild(time);
       commentEl.className = "comment";
       commentEl.style.backgroundColor = comment.color || "#007BFF";
 
-        // Zaman etiketi
-const cTime = document.createElement("span");
-cTime.className = "comment-time";
-cTime.textContent = " (" + formatDate(comment.timestamp) + ")" + " " + ":";
+      const cTime = document.createElement("span");
+      cTime.className = "comment-time";
+      cTime.textContent = " (" + formatDate(comment.timestamp) + ") : ";
 
-      // Yorum avatar + yazar + metin
       const cAvatar = document.createElement("div");
       cAvatar.className = "avatar small-avatar";
       cAvatar.textContent = comment.avatar || comment.author.charAt(0).toUpperCase();
-    //   cAvatar.style.backgroundColor = comment.color || "#fff";
 
       const cAuthor = document.createElement("strong");
       cAuthor.textContent = comment.author;
@@ -160,11 +138,9 @@ cTime.textContent = " (" + formatDate(comment.timestamp) + ")" + " " + ":";
   }
   postEl.appendChild(commentList);
 
-  // Yorum formu
   const commentForm = document.createElement("form");
   commentForm.className = "comment-form";
 
-  // Yorum formunda kullanıcıdan tekrar bilgi istemiyoruz
   commentForm.innerHTML = `
     <input type="text" placeholder="Fikir bildir..." required />
     <button type="submit">Yolla</button>
@@ -195,7 +171,6 @@ cTime.textContent = " (" + formatDate(comment.timestamp) + ")" + " " + ":";
   return postEl;
 }
 
-// Postları dinle ve güncelle
 onValue(ref(db, "posts"), (snapshot) => {
   postsSection.innerHTML = "";
   const posts = snapshot.val() || {};
@@ -209,9 +184,6 @@ onValue(ref(db, "posts"), (snapshot) => {
   });
 });
 
-// Kayıt kontrolleri ve görünüm yönetimi (registration-container ve main-app elementlerini js tarafında yönetiyorsan burayı kontrol et)
-
-
 const settingsBtn = document.getElementById("settings-btn");
 const modal = document.getElementById("settings-modal");
 const closeBtn = document.getElementById("close-settings");
@@ -222,7 +194,6 @@ const nicknameInput = document.getElementById("settings-nickname");
 const colorInput = document.getElementById("settings-color");
 const avatarInput = document.getElementById("settings-avatar");
 
-
 settingsBtn.addEventListener("click", () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   emailInput.value = userData.email;
@@ -232,11 +203,9 @@ settingsBtn.addEventListener("click", () => {
   modal.classList.remove("hidden");
 });
 
-
 closeBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
 });
-
 
 saveBtn.addEventListener("click", () => {
   const updatedUser = {
@@ -248,5 +217,26 @@ saveBtn.addEventListener("click", () => {
 
   localStorage.setItem("userData", JSON.stringify(updatedUser));
   modal.classList.add("hidden");
-  location.reload(); // değişiklikleri uygulamak için
+  location.reload();
+});
+
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("chat-btn")) {
+    const email = e.target.getAttribute("data-email");
+    const nickname = e.target.getAttribute("data-nickname");
+
+    if (email && nickname) {
+      const myData = JSON.parse(localStorage.getItem("userData"));
+      const url = new URL("chat-room.html", window.location.href);
+      url.searchParams.set("me", myData.email);
+      url.searchParams.set("other", email);
+      window.location.href = url.toString();
+    }
+  }
+});
+
+
+const chatStartBtn = document.getElementById("chat-start-btn");
+chatStartBtn.addEventListener("click", () => {
+  window.location.href = "chat.html";
 });
