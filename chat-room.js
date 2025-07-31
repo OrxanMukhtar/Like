@@ -23,33 +23,51 @@ const urlParams = new URLSearchParams(window.location.search);
 const me = urlParams.get("me");
 const other = urlParams.get("other");
 
+const chatInfo = document.getElementById("chatInfo");
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+
+// Parametre kontrolü yoksa chat.html'ye gönder
 if (!me || !other) {
-  alert("Eksik sohbet bilgisi.");
+  alert("Eksik sohbet bilgisi. Sohbet sayfasına yönlendiriliyorsunuz.");
   window.location.href = "chat.html";
 }
 
-document.getElementById("chatInfo").textContent = `🗨️ ${me} ile ${other} arasında sohbet`;
+// Eğer parametreler varsa devam et
+chatInfo.textContent = `🗨️ ${me} ile ${other} arasında sohbet`;
 
 const chatId = [me, other].sort().join("_");
 const messagesRef = ref(db, `chats/${chatId}`);
 
-const chatBox = document.getElementById("chatBox");
-const input = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
+sendBtn.disabled = false; // Aktif et
 
 sendBtn.addEventListener("click", async () => {
   const msg = input.value.trim();
   if (!msg) return;
 
-  await push(messagesRef, {
-    sender: me,
-    message: msg,
-    timestamp: Date.now()
-  });
-
-  input.value = "";
+  try {
+    await push(messagesRef, {
+      sender: me,
+      message: msg,
+      timestamp: Date.now()
+    });
+    input.value = "";
+  } catch (error) {
+    console.error("Mesaj gönderme hatası:", error);
+    alert("Mesaj gönderilemedi. Lütfen tekrar deneyin.");
+  }
 });
 
+// Enter ile mesaj gönderme desteği
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+
+// Mesajları dinle ve ekle
 onChildAdded(messagesRef, (snapshot) => {
   const msgData = snapshot.val();
   const msgEl = document.createElement("div");
