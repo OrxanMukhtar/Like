@@ -34,10 +34,20 @@ if (!me || !other) {
   window.location.href = "chat.html";
 }
 
+
+function sanitizeEmail(email) {
+  return email.replace(/\./g, ",");
+}
+
+const chatId = [sanitizeEmail(me), sanitizeEmail(other)].sort().join("_");
+
+
+
+
 // Eğer parametreler varsa devam et
 chatInfo.textContent = `🗨️ ${me} ile ${other} arasında sohbet`;
 
-const chatId = [me, other].sort().join("_");
+// const chatId = [me, other].sort().join("_");
 const messagesRef = ref(db, `chats/${chatId}`);
 
 sendBtn.disabled = false; // Aktif et
