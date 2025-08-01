@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chat Başlat</title>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    .container { max-width: 600px; margin: auto; text-align: center; }
+    h2 { margin-bottom: 20px; }
+    input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; }
+    button { padding: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; width: 100%; }
+    button:hover { background-color: #0056b3; }
+    button:active { background-color: #004085; }
+    .user-info { margin-bottom: 20px; font-weight: bold; }
+    #resultBox { margin-top: 20px; }
+    #resultBox h3 { margin-bottom: 10px; }
+    #resultBox p {
+        margin: 0 0 15px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .result-item { padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; cursor: pointer; }
+    .result-item:hover { background-color: #f1f1f1; }
+    .hidden { display: none; }
+    .error { color: red; }
+    .success { color: green; }
+    #goForumBtn { background-color: #28a745; }
+    #goForumBtn:hover { background-color: #218838; }
+    #goForumBtn:active { background-color: #1e7e34; }
+    #searchInput { margin-bottom: 10px; }
+    #searchBtn { margin-bottom: 20px; }
+    .result-item p { margin: 0; }
+    .result-item span { font-size: 0.9em; color: #6c757d; }
+    .result-item:hover span { color: #495057; }
+    .result-item.selected { background-color: #007BFF; color: white; }
+    .result-item.selected span { color: white; }
+    .result-item.selected:hover { background-color: #0056b3; }
+    .result-item.selected:hover span { color: white; }
+  </style>
 </head>
 <body>
   <div class="container">

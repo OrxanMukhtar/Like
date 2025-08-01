@@ -12,6 +12,7 @@
     .message { padding: 5px; border-radius: 5px; margin-bottom: 5px; }
     .you { background-color: #cce5ff; text-align: right; }
     .them { background-color: #f1f1f1; text-align: left; }
+    img.chat-img { max-width: 200px; border-radius: 8px; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -19,6 +20,7 @@
     <h2 id="chatInfo">Sohbet</h2>
     <div id="chatBox"></div>
     <input type="text" id="messageInput" placeholder="Mesaj yaz..." />
+    <input type="file" id="imageInput" accept="image/*" />
     <button id="sendBtn">Gönder</button>
     <br/><br/>
     <button onclick="window.location.href='chat.html'">🔙 Sohbet Arama</button>
