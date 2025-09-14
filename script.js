@@ -240,3 +240,57 @@ const chatStartBtn = document.getElementById("chat-start-btn");
 chatStartBtn.addEventListener("click", () => {
   window.location.href = "chat.html";
 });
+
+
+// Rating HTML elementləri
+const ratingForm = document.getElementById("ratingForm");
+const ratingSelect = document.getElementById("ratingSelect");
+const avgRatingEl = document.getElementById("avgRating");
+const avgRatingE2 = document.getElementById("avgRating2");
+
+const ratingsRef = ref(db, "ratings");
+
+// User məlumatı
+const userDataStr2 = localStorage.getItem("userData");
+const currentUser = JSON.parse(userDataStr2);
+
+// Bal göndərmək
+ratingForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const score = parseInt(ratingSelect.value);
+
+  if (!score || score < 1 || score > 10) {
+    alert("1 ilə 10 arasında bal seçin!");
+    return;
+  }
+
+  // hər user yalnız bir dəfə verə bilsin deyə email-based saxlayırıq
+  const userRatingRef = ref(db, `ratings/${currentUser.email.replace(/\./g, "_")}`);
+  set(userRatingRef, {
+    score,
+    timestamp: Date.now()
+  }).then(() => {
+    alert("Təşəkkürlər, balınız qeydə alındı!");
+  });
+});
+
+// Orta bal hesablamaq və göstərmək
+onValue(ratingsRef, (snapshot) => {
+  const data = snapshot.val();
+  if (!data) {
+    avgRatingEl.textContent = "Hələ bal verən yoxdur.";
+    return;
+  }
+
+  let sum = 0;
+  let count = 0;
+
+  Object.values(data).forEach(r => {
+    sum += r.score;
+    count++;
+  });
+
+  const avg = (sum / count).toFixed(2);
+  avgRatingEl.textContent = `Orta bal: ${avg}`;
+  avgRatingE2.textContent = `${count} nəfər səs verib`;
+});

@@ -1,22 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mini Forum</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <div class="headerDiv">
+    <button id="chat-start-btn">💬 Çata keç</button>
+    <h1>Nə var - nə yox...</h1>
+    <button id="settings-btn">⚙️ Setting</button>
+  </div>
   <div class="container">
-    <div class="headerDiv">
-      <button id="chat-start-btn">💬 Çata keç</button>
-        <h1>Nə var - nə yox...</h1>
-        <button id="settings-btn">⚙️ Setting</button>
-    </div>
 
     <div class="infoBox2">
       <p>Etik qaydaları qorumaq şərti ilə fikir bildirmək sərbəstdir!!</p>
     </div>
+
+
+
+
+    <div id="rating-box">
+      <form id="ratingForm">
+        <h3>Ballandır görək...</h3>
+        <select id="ratingSelect" required>
+          <option value="">Seç...</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+        <button type="submit">Gönder</button>
+      </form>
+      <div class="infoBox3">
+        <p id="avgRating">Yüklənir...</p> <br><br>
+        <p id="avgRating2">Yüklənir...</p>
+      </div>
+    </div>
+
+
+
+
+
 
     <form id="postForm">
       <textarea id="content" placeholder="Yaz..." required></textarea>
@@ -30,25 +64,25 @@
     <div class="modal-content">
       <h3>Settings</h3>
       <div class="settings-container">
-          <label>Email</label>
-          <input type="email" id="settings-email">
+        <label>Email</label>
+        <input type="email" id="settings-email">
       </div>
 
       <div class="settings-container">
-          <label>Nick Name</label>
-          <input type="text" id="settings-nickname">
+        <label>Nick Name</label>
+        <input type="text" id="settings-nickname">
       </div>
 
       <div class="settings-container">
-          <label>Avatar</label>
-          <input type="text" id="settings-avatar" inputmode="text" pattern=".*\S.*" required placeholder="🦁, A, 😊" >
+        <label>Avatar</label>
+        <input type="text" id="settings-avatar" inputmode="text" pattern=".*\S.*" required placeholder="🦁, A, 😊">
       </div>
 
       <div class="settings-container">
-          <label>Colour</label>
-          <div class="color-picker">
-              <input type="color" id="settings-color">
-          </div>
+        <label>Colour</label>
+        <div class="color-picker">
+          <input type="color" id="settings-color">
+        </div>
       </div>
 
       <button id="save-settings">Save</button>
@@ -58,4 +92,5 @@
 
   <script type="module" src="script.js"></script>
 </body>
+
 </html>

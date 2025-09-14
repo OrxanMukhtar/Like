@@ -36,7 +36,7 @@ searchBtn.addEventListener("click", async () => {
   resultBox.innerHTML = "";
 
   if (!query) {
-    resultBox.textContent = "Lütfen bir isim ya da rumuz giriniz.";
+    resultBox.textContent = "Please enter a nickname or email to search.";
     return;
   }
 
@@ -45,7 +45,7 @@ searchBtn.addEventListener("click", async () => {
     const users = usersSnapshot.val();
 
     if (!users) {
-      resultBox.textContent = "Hiç kullanıcı bulunamadı.";
+      resultBox.textContent = "No users found.";
       return;
     }
 
@@ -56,18 +56,18 @@ searchBtn.addEventListener("click", async () => {
     );
 
     if (!foundUser) {
-      resultBox.textContent = "Kullanıcı bulunamadı.";
+      resultBox.textContent = "Heç bir istifadəçi tapılmadı.";
       return;
     }
 
     if (foundUser.email === currentUser.email) {
-      resultBox.textContent = "Kendinizle sohbet başlatamazsınız.";
+      resultBox.textContent = "Özünüzlə çatlaşa bilməzsiniz.";
       return;
     }
 
     resultBox.innerHTML = `
       <p><strong>${foundUser.nickname}</strong> (${foundUser.email}) bulundu!</p>
-      <button id="startChatBtn">💬 Sohbet Başlat</button>
+      <button id="startChatBtn">💬 Başlat</button>
     `;
 
     document.getElementById("startChatBtn").addEventListener("click", () => {
@@ -77,8 +77,8 @@ searchBtn.addEventListener("click", async () => {
       window.location.href = url.toString();
     });
   } catch (err) {
-    console.error("Arama hatası:", err);
-    resultBox.textContent = "Arama sırasında bir hata oluştu.";
+    console.error("Error:", err);
+    resultBox.textContent = "Error occurred while searching. Please try again.";
   }
 });
 
