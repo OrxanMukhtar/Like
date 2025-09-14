@@ -311,7 +311,7 @@ footer {
 /* Rating qutusu */
 #rating-box {
   max-width: 400px;
-  margin: 30px auto;
+  margin:  auto;
   padding: 20px;
   border-radius: 16px;
   background: linear-gradient(135deg, #f8f9fa, #ffffff);
@@ -330,6 +330,11 @@ footer {
   margin-bottom: 15px;
   font-size: 20px;
   color: #333;
+}
+
+#ratingForm {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 /* Select qutusu */
@@ -390,4 +395,30 @@ footer {
 #avgRating,
 #avgRating2 {
   animation: fadeIn 0.4s ease forwards;
+}
+
+
+.Comment {
+    font-size: 0.9rem;
+    color: #2563eb !important;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    background-color: #e0e7ff;
+    padding: 10px 40px;    
+}
+
+.Comment img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.Comment p {
+    display: inline;
+    font-size: 1rem;
+    font-weight: 600;
+    vertical-align: middle;
 }
