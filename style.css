@@ -182,3 +182,125 @@ footer {
 .color-picker {
     width: 50%;
 }
+
+
+.user-info {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 15px;
+
+    background-color: #2563eb;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: default;
+    transition: background 0.3s;
+}
+
+#searchInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s;
+
+}
+
+.container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+#searchBtn, #goForumBtn {
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+#goForumBtn {
+    background: #10b981;
+}
+
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.post p {
+    border-left: red 1px solid;
+    padding-left: 10px;
+    margin-left: 5px;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Preserve whitespace and line breaks */
+    word-wrap: break-word; /* Break long words to fit within the container */
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-align: left;
+    background-color: #f9fafb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+    border-left: 4px solid #ff0000;
+    transition: background 0.3s;
+    
+}
+
+.post-header strong {
+    font-size: 0.8rem;
+    color: #111827;
+    margin-left: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #e0e7ff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background 0.3s;
+
+}
+
+.infoBox2 {
+    background-color: #448bfc;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 3px solid #eb2525;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}

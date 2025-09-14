@@ -54,3 +54,11 @@ body {
 .registration-container button:hover {
   background-color: #0056b3;
 }
+
+
+
+.information1 {
+    font-size: 0.9rem;
+    color: #ff1d1d !important;
+    margin-bottom: 15px;
+}

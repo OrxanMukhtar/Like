@@ -24,7 +24,7 @@ if (!userDataStr) {
 }
 const currentUser = JSON.parse(userDataStr);
 
-document.querySelector(".user-info").textContent = `🟢 Giriş yapan: ${currentUser.nickname} (${currentUser.email})`;
+document.querySelector(".user-info").textContent = `🟢 Nickname: ${currentUser.nickname}, email: (${currentUser.email})`;
 
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
